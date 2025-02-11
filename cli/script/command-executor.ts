@@ -1448,11 +1448,9 @@ export const runReactNativeBundleCommand = (
     Array.prototype.push.apply(reactNativeBundleArgs, envNodeArgs.trim().split(/\s+/));
   }
 
-  const isOldCLI = fs.existsSync(path.join("node_modules", "react-native", "local-cli", "cli.js"));
-
   Array.prototype.push.apply(reactNativeBundleArgs, [
-    isOldCLI ? path.join("node_modules", "react-native", "local-cli", "cli.js") : path.join("node_modules", "react-native", "cli.js"),
-    "bundle",
+    "expo",
+    "export:embed",
     "--assets-dest",
     outputFolder,
     "--bundle-output",
@@ -1469,9 +1467,9 @@ export const runReactNativeBundleCommand = (
     reactNativeBundleArgs.push("--sourcemap-output", sourcemapOutput);
   }
 
-  log(chalk.cyan('Running "react-native bundle" command:\n'));
-  const reactNativeBundleProcess = spawn("node", reactNativeBundleArgs);
-  log(`node ${reactNativeBundleArgs.join(" ")}`);
+  log(chalk.cyan('Running "expo export:embed" command:\n'));
+  const reactNativeBundleProcess = spawn("npx", reactNativeBundleArgs);
+  log(`npx ${reactNativeBundleArgs.join(" ")}`);
 
   return Promise<void>((resolve, reject, notify) => {
     reactNativeBundleProcess.stdout.on("data", (data: Buffer) => {
@@ -1484,7 +1482,7 @@ export const runReactNativeBundleCommand = (
 
     reactNativeBundleProcess.on("close", (exitCode: number) => {
       if (exitCode) {
-        reject(new Error(`"react-native bundle" command exited with code ${exitCode}.`));
+        reject(new Error(`"expo export:embed" command exited with code ${exitCode}.`));
       }
 
       resolve(<void>null);
